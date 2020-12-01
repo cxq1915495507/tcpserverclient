@@ -19,7 +19,7 @@ import (
 
 
 func main() {
-	conn ,err := net.Dial("udp","193.167.100.100:8089")
+	conn ,err := net.Dial("tcp","193.167.100.100:18089")
 	if err != nil{
 		fmt.Println("net.Dial err",err)
 		return
