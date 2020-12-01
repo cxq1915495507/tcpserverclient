@@ -38,7 +38,7 @@ func main() {
 	_, _ = conn.Write([]byte("ok"))
 
 
-	go recivefil(conn,fileName)
+	recivefil(conn,fileName)
 
 }
 func recivefil(conn net.Conn,fileName string) {
