@@ -21,7 +21,7 @@ import (
 
 
 func main() {
-	listener ,err := net.Listen("udp","localhost:8089")
+	listener ,err := net.Listen("tcp","localhost:18089")
 	if err != nil{
 		fmt.Println("net.Listener err:",err)
 		return
