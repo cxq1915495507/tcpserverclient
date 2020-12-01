@@ -21,7 +21,7 @@ import (
 
 
 func main() {
-	listener ,err := net.Listen("tcp","localhost:18089")
+	listener ,err := net.Listen("tcp",":18089")
 	if err != nil{
 		fmt.Println("net.Listener err:",err)
 		return
