@@ -21,12 +21,6 @@ import (
 
 func main() {
 	conn ,err := net.Dial("tcp","193.167.100.100:18089")
-	
-        time.Sleep(time.Second * 5)
-	//5.发送文件名给接收端
-        conn ,err = net.Dial("tcp","193.167.100.100:18089")
-	        time.Sleep(time.Second * 5)
-        conn ,err = net.Dial("tcp","193.167.100.100:18089")
 	if err != nil{
 		fmt.Println("net.Dial err",err)
 		return
