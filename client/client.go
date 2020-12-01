@@ -28,9 +28,9 @@ func main() {
 	defer conn.Close()
         time.Sleep(time.Second * 5)
 	//5.发送文件名给接收端
-        conn ,err := net.Dial("tcp","193.167.100.100:18089")
+        conn ,err = net.Dial("tcp","193.167.100.100:18089")
 	        time.Sleep(time.Second * 5)
-        conn ,err := net.Dial("tcp","193.167.100.100:18089")
+        conn ,err = net.Dial("tcp","193.167.100.100:18089")
 	buf := make([]byte, 4096)
 	n, err := conn.Read(buf)
 	if err != nil {
