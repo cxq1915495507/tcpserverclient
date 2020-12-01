@@ -72,7 +72,7 @@ func main() {
 	_, _ = conn.Write([]byte("ok"))
 
 	//6.获取文件内容
-	recivefile(conn)
+	go recivefile(conn)
 }
 
 func recivefile(conn net.Conn)  {
