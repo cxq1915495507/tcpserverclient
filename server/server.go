@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"io"
 )
 
 func Handler(conn net.Conn) {
@@ -31,7 +32,7 @@ func Handler(conn net.Conn) {
 		buf := make([]byte, 2048)
 		n, _ := conn.Read(buf)
 		//结束协程
-		if string(buf[:n]) == "finish" {
+		if string(buf[:n]) == "finish" ||err == io.EOF {
 	fi,_:=os.Stat(fileName)
 			fmt.Println(  "server recieved file size ",fi.Size())
 			fmt.Println(addr + ": 协程结束")
