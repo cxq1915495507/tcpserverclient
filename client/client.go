@@ -23,9 +23,13 @@ func SendFile(conn net.Conn) {
 		n, err := f.Read(buf)
 		if err != nil && io.EOF == err {
 			fmt.Println("文件传输完成")
-			//告诉服务端结束文件接收
+		        fi,err:=os.Stat("test")
+			if err ==nil {
+				fmt.Println("file size is ",fi.Size(),"Bytes")
+			}
 			conn.Write([]byte("finish"))
-			return
+				time.Sleep(time.Second * 360)  
+
 		}
 		//发送给服务端
 		conn.Write(buf[:n])
@@ -36,7 +40,6 @@ func SendFile(conn net.Conn) {
 	value := fmt.Sprintf("%.2f",count )
 		//打印上传进度
 		fmt.Println("文件上传：" + value + "%")
-	time.Sleep(time.Second * 360)  
 }
 
 func main() {
