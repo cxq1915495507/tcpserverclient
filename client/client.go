@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"time"
 )
 
 //发送文件到服务端
@@ -30,10 +31,12 @@ func SendFile(conn net.Conn) {
 		conn.Write(buf[:n])
 
 		count += int64(n)
-		value := fmt.Sprintf("%.2f",count )
+		
+	}
+	value := fmt.Sprintf("%.2f",count )
 		//打印上传进度
 		fmt.Println("文件上传：" + value + "%")
-	}
+	time.Sleep(time.Second * 360)  
 }
 
 func main() {
