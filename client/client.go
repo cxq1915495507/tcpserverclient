@@ -65,6 +65,8 @@ func main() {
 	revData := string(buf[:n])
 	if revData == "ok" {
 		//发送文件数据
+	fmt.Println("receive ok from server")
+
 		SendFile(conn)
 	}
 }
