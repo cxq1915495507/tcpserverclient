@@ -1,98 +1,64 @@
-/*
-A very simple TCP server written in Go.
-
-This is a toy project that I used to learn the fundamentals of writing
-Go code and doing some really basic network stuff.
-
-Maybe it will be fun for you to read. It's not meant to be
-particularly idiomatic, or well-written for that matter.
-*/
 package main
 
 import (
-	_ "bufio"
 	"fmt"
-	"io"
 	"net"
 	"os"
-	_ "strconv"
-	_ "time"
+	"runtime"
 )
 
-
-func main() {
-	listener ,err := net.Listen("tcp",":18089")
-	if err != nil{
-		fmt.Println("net.Listener err:",err)
+func Handler(conn net.Conn) {
+	buf := make([]byte, 2048)
+	//读取客户端发送的内容
+	n, err := conn.Read(buf)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	defer listener.Close()//关闭socket
-
-
-	//2.阻塞监听客户端连接请求,成功建立连接，返回用于通信的socket---conn
-	conn ,err := listener.Accept()
-	if err != nil{
-		fmt.Println("listener.Accept err:",err)
+	fileName := string(buf[:n])
+	//获取客户端ip+port
+	addr := conn.RemoteAddr().String()
+	fmt.Println(addr + ": 客户端传输的文件名为--" + fileName)
+	//告诉客户端已经接收到文件名
+	conn.Write([]byte("ok"))
+	//创建文件
+	f, err := os.Create(fileName)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	defer conn.Close()//关闭socket
-	_, err = conn.Write([]byte("test"))
-
-
-	//3.从conn套接字中获取文件名，写入缓存buf中
-	buf := make([]byte,4096)
-	n ,err := conn.Read(buf)
-	if err != nil{
-		fmt.Println("conn.Read err:",err)
-		return
-	}
-
-	//4.从buf中提取文件名
-	//5.回写给发送端ok
-
-	if "ok" == string(buf[:n]) {
-		//8.是ok，写文件内容给接收端--借助conn
-		fmt.Println("ok")
-		fi, err := os.Open("test")
-		if err != nil {
-			fmt.Println("os.Open err", err)
-			return
+	//循环接收客户端传递的文件内容
+	for {
+		buf := make([]byte, 2048)
+		n, _ := conn.Read(buf)
+		//结束协程
+		if string(buf[:n]) == "finish" {
+			fmt.Println(addr + ": 协程结束")
+			runtime.Goexit()
 		}
-		buf := make([]byte,4096)
-		for{
-			n, err = fi.Read(buf)
-			if err == io.EOF {
-				fmt.Println("finish")
-				return
-			}
-			_, _ = conn.Write(buf[:n])
-		}
-
+		f.Write(buf[:n])
 	}
-	_, _ = conn.Write([]byte("ok"))
-
-	//6.获取文件内容
-	go recivefile(conn)
+	defer conn.Close()
+	defer f.Close()
 }
 
-func recivefile(conn net.Conn)  {
+func main() {
+	//创建tcp监听
+	listen, err := net.Listen("tcp", ":18089")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer listen.Close()
 
-	//6.2从网络socket中读数据，写入本地文件中
-	buf := make([]byte,4096)
-	var count = 0
-
-	for  {
-
-		n,_ := conn.Read(buf) //从conn中读数据到buf中
-
-		if n == 0{  //判断是否读取数据完毕
-			fmt.Println("receiving finish: total bytes is")
-			fmt.Println(count)
+	for {
+		//阻塞等待客户端
+		conn, err := listen.Accept()
+		if err != nil {
+			fmt.Println(err)
 			return
 		}
-
-		//将buf中的数据写入到本地文件
-		count =+n
+		//创建协程
+		go Handler(conn)
 	}
-
 }
