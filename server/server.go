@@ -32,12 +32,13 @@ func Handler(conn net.Conn) {
 		buf := make([]byte, 2048)
 		n, _ := conn.Read(buf)
 		//结束协程
-		if string(buf[:n]) == "finish" ||err == io.EOF {
-	fi,_:=os.Stat(fileName)
+	         _, _ = f.Write(buf[:n])
+		if err == io.EOF {
+			fi,_:=os.Stat(fileName)
 			fmt.Println(  "server recieved file size ",fi.Size())
 			fmt.Println(addr + ": 协程结束")
 		}
-		f.Write(buf[:n])
+		_, _ = f.Write(buf[:n])
 	}
 	defer conn.Close()
 	defer f.Close()
