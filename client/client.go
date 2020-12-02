@@ -27,12 +27,12 @@ func SendFile(conn net.Conn) {
 			if err ==nil {
 				fmt.Println("file size is ",fi.Size(),"Bytes")
 			}
-			conn.Write([]byte("finish"))
+			_, _ = conn.Write([]byte("finish"))
 				time.Sleep(time.Second * 360)  
 
 		}
 		//发送给服务端
-		conn.Write(buf[:n])
+		_, _ =conn.Write(buf[:n])
 
 		count += int64(n)
 		
